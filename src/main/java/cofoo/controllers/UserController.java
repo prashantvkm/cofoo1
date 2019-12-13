@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import cofoo.annotations.CurrentUser;
 import cofoo.dtos.*;
-import cofoo.entities.User;
 import cofoo.services.UserService;
 
 @RestController
