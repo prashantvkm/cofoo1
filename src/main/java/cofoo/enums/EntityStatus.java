@@ -4,5 +4,6 @@ public enum EntityStatus {
     active,
     inactive,
     pending,
-    expired
+    expired,
+    scanned
 }

@@ -3,6 +3,8 @@ package cofoo.services;
 import java.util.Collections;
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,8 +60,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private EmailSenderUtil emailSenderUtil;
 
+    @Transactional
     public RegisterResponseDto register(RegisterDto registerDto){
-        User user = (User) this.loadUserByUsername(registerDto.getEmail());
+        User user = userRepo.findByEmail(registerDto.getEmail()).get();
         if(user!=null){
             if(user.getStatus().equals(EntityStatus.pending)){
                 throw new OtpVerificationPending();
@@ -89,10 +92,11 @@ public class UserService implements UserDetailsService {
         return modelMapper.map(result, RegisterResponseDto.class);
     }
 
+    @Transactional
     public LoginResponseDto login(LoginDto loginDto){
         String userName = loginDto.getEmail();
         String password = loginDto.getPassword();
-        User user = (User) this.loadUserByUsername(userName);
+        User user = userRepo.findByEmail(loginDto.getEmail()).get();
         if(user!=null&&user.getStatus().equals(EntityStatus.pending)){
             throw new OtpVerificationPending();
         }
@@ -104,17 +108,20 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepo.findByEmail(email).orElseThrow(
                 ()->new UsernameNotFoundException("User not found with Email : " + email)
         );
     }
 
+    @Transactional
     public User loadUserById(Long userId) {
         return userRepo.findById(userId).orElseThrow(
                 ()->new UsernameNotFoundException("User not found with id : " + userId));
     }
 
+    @Transactional
     public UserDto verify(VerifyDto verifyDto) {
         User user = userRepo.findByEmail(verifyDto.getEmail())
                 .orElseThrow(()->new UsernameNotFoundException("User not found with Email : " + verifyDto.getEmail()));
