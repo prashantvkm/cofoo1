@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import cofoo.annotations.CurrentUser;
 import cofoo.dtos.*;
+import cofoo.entities.User;
 import cofoo.services.UserService;
 
 @RestController
@@ -26,5 +28,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public LoginResponseDto login(@Valid @RequestBody LoginDto loginDto){
         return userService.login(loginDto);
+    }
+
+    @PostMapping("/verify")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void verify(@Valid @RequestBody VerifyDto verifyDto){
+        userService.verify(verifyDto);
     }
 }

@@ -16,7 +16,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import cofoo.dtos.ErrorDto;
+import cofoo.exceptions.CodeInvalidOrExpired;
 import cofoo.exceptions.DuplicateAccountException;
+import cofoo.exceptions.RecordNotFoundException;
 
 @ControllerAdvice
 @RestController
@@ -50,6 +52,24 @@ public class ExceptionHandlerController {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorDto error = new ErrorDto(new Date(),"Account with this Email ID does not exists", details);
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CodeInvalidOrExpired.class)
+    public ErrorDto otpIsInvalidOrExpired(CodeInvalidOrExpired ex){
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorDto error = new ErrorDto(new Date(),ex.getLocalizedMessage(), details);
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RecordNotFoundException.class)
+    public ErrorDto otpIsInvalidOrExpired(RecordNotFoundException ex){
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorDto error = new ErrorDto(new Date(),"Entity record not found", details);
         return error;
     }
 }

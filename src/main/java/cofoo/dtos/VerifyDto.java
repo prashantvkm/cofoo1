@@ -3,10 +3,9 @@ package cofoo.dtos;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class RegisterResponseDto {
-    private String name;
+@Setter
+public class VerifyDto {
+    private String otp;
     private String email;
-    private String mobileNo;
 }
