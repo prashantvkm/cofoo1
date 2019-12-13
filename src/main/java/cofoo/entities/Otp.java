@@ -12,13 +12,13 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import cofoo.enums.EntityStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity
 public class Otp extends BaseEntity{
 
@@ -29,10 +29,18 @@ public class Otp extends BaseEntity{
     private String code;
     private Date expiredAt;
 
+    public Otp(User user, String code, Date expiredAt, EntityStatus status){
+        setUser(user);
+        setCode(code);
+        setExpiredAt(expiredAt);
+        setStatus(status);
+    }
+
     public static Otp createOtp(User user){
         return new Otp(
                 user,
                 String.valueOf(new Random().nextInt(9999)),
-                new Date(Calendar.getInstance().getTimeInMillis() + (5 * 60000)));
+                new Date(Calendar.getInstance().getTimeInMillis() + (5 * 60000)),
+                EntityStatus.active);
     }
 }

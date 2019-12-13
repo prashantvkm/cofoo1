@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import cofoo.annotations.CurrentUser;
 import cofoo.dtos.*;
 import cofoo.entities.Otp;
 import cofoo.entities.Role;
