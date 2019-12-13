@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import cofoo.dtos.CommonResponseDto;
 import cofoo.dtos.ErrorDto;
 import cofoo.exceptions.CodeInvalidOrExpired;
 import cofoo.exceptions.DuplicateAccountException;
+import cofoo.exceptions.OtpVerificationPending;
 import cofoo.exceptions.RecordNotFoundException;
 
 @ControllerAdvice
@@ -70,6 +72,16 @@ public class ExceptionHandlerController {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorDto error = new ErrorDto(new Date(),"Entity record not found", details);
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(OtpVerificationPending.class)
+    public ErrorDto otpVerifyPending(OtpVerificationPending ex){
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorDto error = new ErrorDto(new Date(),"OTP verificaion of this account is pending," +
+                " please verify your account with the OTP sent to your email or request a new OTP.", details);
         return error;
     }
 }

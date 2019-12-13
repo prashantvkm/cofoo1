@@ -27,7 +27,6 @@ public abstract class BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @NaturalId
     @Column(length = 60)
     private EntityStatus status;
 

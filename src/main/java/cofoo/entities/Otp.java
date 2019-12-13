@@ -15,11 +15,13 @@ import org.hibernate.annotations.OnDeleteAction;
 import cofoo.enums.EntityStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Otp extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
