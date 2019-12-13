@@ -62,8 +62,8 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public RegisterResponseDto register(RegisterDto registerDto){
-        User user = userRepo.findByEmail(registerDto.getEmail()).get();
-        if(user!=null){
+        if(userRepo.findByEmail(registerDto.getEmail()).isPresent()){
+        	User user = userRepo.findByEmail(registerDto.getEmail()).get();
             if(user.getStatus().equals(EntityStatus.pending)){
                 throw new OtpVerificationPending();
             } else {
