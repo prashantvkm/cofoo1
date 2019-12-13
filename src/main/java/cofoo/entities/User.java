@@ -32,12 +32,11 @@ public class User extends BaseEntity implements UserDetails {
 
     private String mobileNo;
 
-    @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -45,9 +44,13 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return (authorities==null)?getRoles().stream().map(role ->
-                new SimpleGrantedAuthority(role.getRoleName().name())
-        ).collect(Collectors.toList()):authorities;
+    	if(authorities==null) {
+    		authorities = getRoles().stream().map(role ->
+            	new SimpleGrantedAuthority(role.getRoleName().name())
+    		).collect(Collectors.toList());
+    	}
+    	return authorities;
+    	
     }
 
     @Override

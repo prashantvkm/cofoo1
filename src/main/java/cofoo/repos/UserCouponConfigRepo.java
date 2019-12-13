@@ -12,5 +12,6 @@ import cofoo.enums.EntityStatus;
 
 @Repository
 public interface UserCouponConfigRepo extends JpaRepository<UserCouponConfig,Long> {
-    public Optional<UserCouponConfig> findByUseDateAndUserAndStatus(Date userDate, User user, EntityStatus status);
+	
+    //public Optional<UserCouponConfig> findByUseDateAndUserAndStatus(Date userDate, User user, EntityStatus status);
 }
