@@ -24,7 +24,7 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public LoginResponseDto login(@Valid @RequestBody LoginDto loginDto){
+    public CommonResponseDto login(@Valid @RequestBody LoginDto loginDto){
         return userService.login(loginDto);
     }
 
@@ -32,5 +32,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void verify(@Valid @RequestBody VerifyDto verifyDto){
         userService.verify(verifyDto);
+    }
+
+    @PostMapping("re_otp")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponseDto reOtp(@Valid @RequestBody VerifyDto verifyDto) {
+        return userService.reOtp(verifyDto);
     }
 }

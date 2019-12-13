@@ -93,18 +93,22 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public LoginResponseDto login(LoginDto loginDto){
+    public CommonResponseDto login(LoginDto loginDto){
         String userName = loginDto.getEmail();
         String password = loginDto.getPassword();
-        User user = userRepo.findByEmail(loginDto.getEmail()).get();
-        if(user!=null&&user.getStatus().equals(EntityStatus.pending)){
-            throw new OtpVerificationPending();
+        if(userRepo.findByEmail(loginDto.getEmail()).isPresent()){
+            User user = userRepo.findByEmail(loginDto.getEmail()).get();
+            if(user.getStatus().equals(EntityStatus.pending)){
+                throw new OtpVerificationPending();
+            }
         }
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(userName, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtTokenUtil.generateToken(authentication);
-        return new LoginResponseDto(loginDto.getEmail(),jwtToken);
+        return new CommonResponseDto("Login successful",
+                EntityStatus.success,
+                new LoginResponseDto(loginDto.getEmail(),jwtToken));
     }
 
     @Override
@@ -130,5 +134,25 @@ public class UserService implements UserDetailsService {
         User userEntity = otp.getUser();
         userEntity.setStatus(EntityStatus.active);
         return modelMapper.map(userRepo.save(userEntity),UserDto.class);
+    }
+
+    public CommonResponseDto reOtp(VerifyDto verifyDto) {
+        User user = null;
+        if(userRepo.findByEmail(verifyDto.getEmail()).isPresent()){
+            user = userRepo.findByEmail(verifyDto.getEmail()).get();
+            if(user.getStatus().equals(EntityStatus.active)){
+                throw new RuntimeException("User already verified please login to use our services");
+            }
+        }
+        otpRepo.updateOtpStatus();
+        Otp otp = otpRepo.save(Otp.createOtp(user));
+        System.out.println(otp.getCode());
+//        emailSenderUtil.sendEmail(
+//                emailSenderUtil.createEmail(
+//                        registerDto.getEmail(),
+//                        "OTP for Email verification",
+//                        "Please use the code below and verify you email. "+otp.getCode()
+//                ));
+        return new CommonResponseDto("New OTP generate and sent to your email address",EntityStatus.success,null);
     }
 }
