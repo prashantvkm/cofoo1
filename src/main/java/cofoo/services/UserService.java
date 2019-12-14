@@ -183,11 +183,22 @@ public class UserService implements UserDetailsService {
                 modelMapper.map(user,UserListDto.class),
                 (userMealGroup!=null)?
                         modelMapper.map(userMealGroup.getMealGroup(),GroupListDto.class):
-                null);
+                        null);
         return new CommonResponseDto(
                 "User Details with Meal types",
                 EntityStatus.success,
                 userDeatilDto
+        );
+    }
+
+    public CommonResponseDto findByEmail(String email) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(()-> new UsernameNotFoundException("User not found with this Email"));
+        return new CommonResponseDto(
+                "User found",
+                EntityStatus.success,
+                modelMapper.map(user,
+                        UserListDto.class)
         );
     }
 }

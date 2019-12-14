@@ -96,7 +96,7 @@ public class MealGroupController {
                 EntityStatus.success,
                 modelMapper.map(
                                 userMealGroupRepo.save(new UserMealGroup(user,mealGroup)),
-                        UserMealGroupDto.class
+                                UserMealGroupDto.class
                         )
                 );
     }

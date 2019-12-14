@@ -54,4 +54,10 @@ public class UserController {
     public CommonResponseDto find(@PathVariable Long id){
         return userService.find(id);
     }
+
+    @PostMapping("/find")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponseDto findByEmail(@Valid @RequestBody UserSearchDto email){
+        return userService.findByEmail(email.getEmail());
+    }
 }
