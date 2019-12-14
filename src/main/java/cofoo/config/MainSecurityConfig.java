@@ -71,7 +71,7 @@ public class MainSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/**")
+                .antMatchers("/user/login","/user/signup","/user/verify","/user/re_otp")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

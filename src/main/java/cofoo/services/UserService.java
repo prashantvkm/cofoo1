@@ -140,6 +140,7 @@ public class UserService implements UserDetailsService {
                 modelMapper.map(userRepo.save(userEntity),UserDto.class));
     }
 
+    @Transactional
     public CommonResponseDto reOtp(VerifyDto verifyDto) {
         User user = null;
         if(userRepo.findByEmail(verifyDto.getEmail()).isPresent()){
@@ -158,5 +159,17 @@ public class UserService implements UserDetailsService {
 //                        "Please use the code below and verify you email. "+otp.getCode()
 //                ));
         return new CommonResponseDto("New OTP generate and sent to your email address",EntityStatus.success,null);
+    }
+
+    @Transactional
+    public CommonResponseDto update(UserDto userDto, User user){
+        user.setEmail(userDto.getEmail());
+        user.setMobileNo(userDto.getMobileNo());
+        user.setName(userDto.getName());
+        return new CommonResponseDto(
+                "Information successfully updated",
+                EntityStatus.success,
+                modelMapper.map(userRepo.save(user),UserDto.class)
+        );
     }
 }

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import cofoo.annotations.CurrentUser;
 import cofoo.dtos.*;
+import cofoo.entities.User;
 import cofoo.services.UserService;
 
 @RestController
@@ -34,9 +36,15 @@ public class UserController {
         return userService.verify(verifyDto);
     }
 
-    @PostMapping("re_otp")
+    @PostMapping("/re_otp")
     @ResponseStatus(HttpStatus.OK)
     public CommonResponseDto reOtp(@Valid @RequestBody VerifyDto verifyDto) {
         return userService.reOtp(verifyDto);
+    }
+
+    @PutMapping("/edit")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponseDto update(@Valid @RequestBody UserDto userDto, @CurrentUser User user){
+        return userService.update(userDto, user);
     }
 }
