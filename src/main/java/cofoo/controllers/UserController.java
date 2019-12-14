@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import cofoo.annotations.CurrentUser;
 import cofoo.dtos.*;
 import cofoo.entities.User;
+import cofoo.enums.EntityStatus;
 import cofoo.services.UserService;
 
 @RestController
@@ -46,5 +47,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public CommonResponseDto update(@Valid @RequestBody UserDto userDto, @CurrentUser User user){
         return userService.update(userDto, user);
+    }
+
+    @GetMapping("/find/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CommonResponseDto find(@PathVariable Long id){
+        return userService.find(id);
     }
 }

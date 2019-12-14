@@ -21,15 +21,14 @@ import cofoo.dtos.*;
 import cofoo.entities.Otp;
 import cofoo.entities.Role;
 import cofoo.entities.User;
+import cofoo.entities.UserMealGroup;
 import cofoo.enums.EntityStatus;
 import cofoo.enums.RoleName;
 import cofoo.exceptions.CodeInvalidOrExpired;
 import cofoo.exceptions.DuplicateAccountException;
 import cofoo.exceptions.OtpVerificationPending;
 import cofoo.exceptions.RecordNotFoundException;
-import cofoo.repos.OtpRepo;
-import cofoo.repos.RoleRepo;
-import cofoo.repos.UserRepo;
+import cofoo.repos.*;
 import cofoo.utils.EmailSenderUtil;
 import cofoo.utils.JwtTokenUtil;
 
@@ -59,6 +58,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private EmailSenderUtil emailSenderUtil;
+
+    @Autowired
+    private UserMealGroupRepo userMealGroupRepo;
 
     @Transactional
     public CommonResponseDto register(RegisterDto registerDto){
@@ -170,6 +172,22 @@ public class UserService implements UserDetailsService {
                 "Information successfully updated",
                 EntityStatus.success,
                 modelMapper.map(userRepo.save(user),UserDto.class)
+        );
+    }
+
+    public CommonResponseDto find(Long id) {
+        User user = userRepo.findById(id).orElseThrow(
+                ()-> new RecordNotFoundException());
+        UserMealGroup userMealGroup = userMealGroupRepo.findByUser(user);
+        UserDeatilDto userDeatilDto = new UserDeatilDto(
+                modelMapper.map(user,UserListDto.class),
+                (userMealGroup!=null)?
+                        modelMapper.map(userMealGroup.getMealGroup(),GroupListDto.class):
+                null);
+        return new CommonResponseDto(
+                "User Details with Meal types",
+                EntityStatus.success,
+                userDeatilDto
         );
     }
 }
