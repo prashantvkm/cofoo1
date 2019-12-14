@@ -18,7 +18,7 @@ public class UserController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegisterResponseDto signup(@Valid @RequestBody RegisterDto registerDto){
+    public CommonResponseDto signup(@Valid @RequestBody RegisterDto registerDto){
         return userService.register(registerDto);
     }
 
@@ -30,8 +30,8 @@ public class UserController {
 
     @PostMapping("/verify")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void verify(@Valid @RequestBody VerifyDto verifyDto){
-        userService.verify(verifyDto);
+    public CommonResponseDto verify(@Valid @RequestBody VerifyDto verifyDto){
+        return userService.verify(verifyDto);
     }
 
     @PostMapping("re_otp")

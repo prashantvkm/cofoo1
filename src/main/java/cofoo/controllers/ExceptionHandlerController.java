@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import cofoo.dtos.CommonResponseDto;
 import cofoo.dtos.ErrorDto;
+import cofoo.enums.EntityStatus;
 import cofoo.exceptions.CodeInvalidOrExpired;
 import cofoo.exceptions.DuplicateAccountException;
 import cofoo.exceptions.OtpVerificationPending;
@@ -28,7 +29,7 @@ public class ExceptionHandlerController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> validation(
+    public CommonResponseDto validation(
             MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -36,52 +37,72 @@ public class ExceptionHandlerController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return errors;
+        return new CommonResponseDto("Validation failed for some field(s).",
+                EntityStatus.failed,
+                errors);
     }
 
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler(DuplicateAccountException.class)
-    public ErrorDto duplicateAccount(DuplicateAccountException ex) {
+    public CommonResponseDto duplicateAccount(DuplicateAccountException ex) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorDto error = new ErrorDto(new Date(),"Account with same Email ID already exits", details);
-        return error;
+        return new CommonResponseDto(
+                "Account with same Email ID already exits",
+                EntityStatus.failed,
+                details);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UsernameNotFoundException.class)
-    public ErrorDto userNotFound(UsernameNotFoundException ex){
+    public CommonResponseDto userNotFound(UsernameNotFoundException ex){
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorDto error = new ErrorDto(new Date(),"Account with this Email ID does not exists", details);
-        return error;
+        return new CommonResponseDto(
+                "Account with this Email ID does not exists",
+                EntityStatus.failed,
+                details);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(CodeInvalidOrExpired.class)
-    public ErrorDto otpIsInvalidOrExpired(CodeInvalidOrExpired ex){
+    public CommonResponseDto otpIsInvalidOrExpired(CodeInvalidOrExpired ex){
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorDto error = new ErrorDto(new Date(),ex.getLocalizedMessage(), details);
-        return error;
+        return new CommonResponseDto(
+                ex.getLocalizedMessage(),
+                EntityStatus.failed,
+                details);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(RecordNotFoundException.class)
-    public ErrorDto otpIsInvalidOrExpired(RecordNotFoundException ex){
+    public CommonResponseDto otpIsInvalidOrExpired(RecordNotFoundException ex){
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorDto error = new ErrorDto(new Date(),"Entity record not found", details);
-        return error;
+        return new CommonResponseDto(
+                "Record not found",
+                EntityStatus.failed,
+                details);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(OtpVerificationPending.class)
-    public ErrorDto otpVerifyPending(OtpVerificationPending ex){
+    public CommonResponseDto otpVerifyPending(OtpVerificationPending ex){
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorDto error = new ErrorDto(new Date(),"OTP verificaion of this account is pending," +
-                " please verify your account with the OTP sent to your email or request a new OTP.", details);
-        return error;
+        return new CommonResponseDto(
+                "OTP verificaion of this account is pending," +
+                        " please verify your account with the OTP sent to your email or request a new OTP.",
+                EntityStatus.failed,
+                details);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RuntimeException.class)
+    public CommonResponseDto validation(RuntimeException ex) {
+        return new CommonResponseDto(ex.getLocalizedMessage(),
+                EntityStatus.failed,
+                null);
     }
 }
