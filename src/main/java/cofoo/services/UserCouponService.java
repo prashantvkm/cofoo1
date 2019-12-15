@@ -34,13 +34,6 @@ public class UserCouponService {
         }
         Date scanDate = new Date();
         int hour = scanDate.getHours();
-//        SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
-//        Date eight = parser.parse("8:00");
-//        Date ten = parser.parse("10:00");
-//        Date twele = parser.parse("12:00");
-//        Date fifteen = parser.parse("15:00");
-//        Date twenty = parser.parse("20:00");
-//        Date twentytwo = parser.parse("22:00");
 
         UserCouponDailyLog userCouponDailyLog = new UserCouponDailyLog();
         userCouponDailyLog.setScanDate(scanDate);

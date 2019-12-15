@@ -23,4 +23,6 @@ public class UserCouponController {
 	public CommonResponseDto scan(@CurrentUser User user) throws ParseException {
 		return userCouponService.scanQR(user);
 	}
+
+
 }

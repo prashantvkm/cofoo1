@@ -91,7 +91,7 @@ public class UserService implements UserDetailsService {
 //                        "OTP for Email verification",
 //                        "Please use the code below and verify you email. "+otp.getCode()
 //                ));
-        return new CommonResponseDto("Registration successful please verify your account using OTP that we have send to your Email",
+        return new CommonResponseDto("Registration successful please verify your account using OTP ("+otp.getCode()+") that we have send to your Email",
                 EntityStatus.success,
                 modelMapper.map(result, RegisterResponseDto.class));
     }
